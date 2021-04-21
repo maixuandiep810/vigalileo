@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\GenericLayer\vigalileo.Utilities\vigalileo.Utilities.csproj" />
+    <ProjectReference Include="..\..\BusinessLayer\vigalileo.Services\vigalileo.Services.csproj" />
+    <ProjectReference Include="..\..\GenericLayer\vigalileo.DTOs\vigalileo.DTOs.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+
+</Project>
