@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using vigalileo.BackendApi.Extensions;
+using FluentValidation.AspNetCore;
 
 namespace vigalileo.BackendApi
 {
@@ -30,7 +31,10 @@ namespace vigalileo.BackendApi
             services.AddViServices();
             services.AddIdentityServices();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation();
+
+            services.AddViValidator();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,6 +6,8 @@ using vigalileo.Data.EF;
 using Microsoft.Extensions.Configuration;
 using vigalileo.Utilities.Constants;
 using Microsoft.EntityFrameworkCore;
+using vigalileo.DTOs.System.Users;
+using FluentValidation;
 
 namespace vigalileo.BackendApi.Extensions
 {
@@ -33,6 +35,12 @@ namespace vigalileo.BackendApi.Extensions
             services.AddTransient<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
             services.AddTransient<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
             services.AddTransient<RoleManager<ApplicationRole>, RoleManager<ApplicationRole>>();
+            return services;
+        }
+
+        public static IServiceCollection AddViValidator(this IServiceCollection services)
+        {
+            services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
             return services;
         }
     }

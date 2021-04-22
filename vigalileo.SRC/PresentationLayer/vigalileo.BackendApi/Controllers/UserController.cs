@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using vigalileo.DTOs.Common;
 using vigalileo.Utilities.Constants;
 using vigalileo.Utilities.UriUtils;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
+using vigalileo.BackendApi.Extensions;
 
 namespace vigalileo.BackendApi.Controllers
 {
@@ -17,14 +20,22 @@ namespace vigalileo.BackendApi.Controllers
         }
 
         [HttpPost(UriConstants.API_USERS_REGISTER)]
-        public async Task<IActionResult> Register(RegisterRequest req)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest req)
         {
             var result = new ApiResult<bool>(false);
-            if (HttpContext.Request.Headers["Authorization"].ToString() != null)
+            if (StringValues.IsNullOrEmpty(HttpContext.Request.Headers["Authorization"]) == false)
             {
-                result.SetResult((int) ApiResultConstants.CODE.CLIENT_ERROR, false, false, ApiResultConstants.MESSAGE(ApiResultConstants.CODE.CLIENT_ERROR)); 
+                result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, false, ApiResultConstants.MESSAGE(ApiResultConstants.CODE.CLIENT_ERROR), "hahaha");
                 return Ok(result);
             }
+
+            if (!ModelState.IsValid)
+            {
+                var validatorResult = new ApiResult<RegisterRequest>(new RegisterRequest());
+                validatorResult.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, req, ModelState.GetMessages());
+                return Ok(validatorResult);
+            }
+
             result = await _userService.RegisterAsync(req);
             return Ok(result);
         }
