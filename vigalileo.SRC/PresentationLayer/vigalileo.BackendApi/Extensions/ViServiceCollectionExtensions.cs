@@ -41,6 +41,7 @@ namespace vigalileo.BackendApi.Extensions
         public static IServiceCollection AddViValidator(this IServiceCollection services)
         {
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             return services;
         }
     }

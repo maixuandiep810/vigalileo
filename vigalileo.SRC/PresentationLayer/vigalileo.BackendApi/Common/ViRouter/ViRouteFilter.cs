@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace vigalileo.BackendApi.Common.ViRouter
 {
-    public class ViRouteFilter
+    public static class ViRouteFilter
     {
         public static bool FilterRoutes(HttpContext httpContext, ViRoute viRoute)
         {
@@ -23,6 +23,11 @@ namespace vigalileo.BackendApi.Common.ViRouter
                 }
             }
             return false;
+        }
+
+        public static bool FilterAuthenticationRoutes(HttpContext httpContext)
+        {
+            return FilterRoutes(httpContext, ViListRoutes.AuthenticationRoutes);
         }
     }
 }

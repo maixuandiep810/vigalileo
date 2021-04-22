@@ -50,6 +50,7 @@ namespace vigalileo.BackendApi
             app.UseRouting();
 
             // app.UseViExceptionHandler();
+            app.UseViAuthentication();
 
             app.UseAuthorization();
 
