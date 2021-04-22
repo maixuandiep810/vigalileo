@@ -10,6 +10,7 @@ namespace vigalileo.Utilities.Constants
             SUCCESS = 9000,
 
             USERNAME_PASSWORD_EXISTS_E = 6001,
+            USERNAME_PASSWORD_INCORRECT_E = 6002,
 
             SUCCESSFULLY_REGISTER_S = 9001
         }
@@ -29,6 +30,8 @@ namespace vigalileo.Utilities.Constants
 
                 case CODE.USERNAME_PASSWORD_EXISTS_E:
                     return "The username or email already exists.";
+                case CODE.USERNAME_PASSWORD_INCORRECT_E:
+                    return "The username or password is incorrect.";
 
                 case CODE.SUCCESSFULLY_REGISTER_S:
                     return "Your account has been succesfully created.";

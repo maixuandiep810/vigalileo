@@ -13,7 +13,7 @@ namespace vigalileo.DTOs.Common
 
         public ApiResult(T defaultData)
         {
-            Code = (int) ApiResultConstants.CODE.ERROR;
+            Code = (int)ApiResultConstants.CODE.ERROR;
             IsSuccessed = false;
             Data = defaultData;
             Messages = new List<string>();
@@ -21,6 +21,19 @@ namespace vigalileo.DTOs.Common
         }
 
         public void SetResult(int code, bool isSuccessed, T data, params string[] messages)
+        {
+            Code = code;
+            IsSuccessed = isSuccessed;
+            Data = data;
+
+            Messages = new List<string>();
+            foreach (var mess in messages)
+            {
+                Messages.Add(mess);
+            }
+        }
+
+        public void SetResult(int code, bool isSuccessed, T data, List<string> messages)
         {
             Code = code;
             IsSuccessed = isSuccessed;

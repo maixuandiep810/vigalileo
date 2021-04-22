@@ -43,10 +43,7 @@ namespace vigalileo.Services.System.Users
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user != null || await _userManager.FindByEmailAsync(request.Email) != null)
             {
-                apiResult.SetResult(
-                    (int)ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E,
-                    false,
-                    false,
+                apiResult.SetResult((int)ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E, false, false,
                     ApiResultConstants.MESSAGE(ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E));
                 return apiResult;
             }
@@ -55,31 +52,37 @@ namespace vigalileo.Services.System.Users
             {
                 Email = request.Email,
                 UserName = request.UserName,
+                FirstName = request.FirstName,
+                LastName = request.LastName
             };
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                apiResult.SetResult(
-                    (int)ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E,
-                    true,
-                    true,
-                    ApiResultConstants.MESSAGE(ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E));
+                apiResult.SetResult((int)ApiResultConstants.CODE.SUCCESSFULLY_REGISTER_S, true, true,
+                    ApiResultConstants.MESSAGE(ApiResultConstants.CODE.SUCCESSFULLY_REGISTER_S));
                 return apiResult;
             }
-            return apiResult;
+            else
+            {
+                apiResult.SetResult((int)ApiResultConstants.CODE.ERROR, false, false,
+                    ApiResultConstants.MESSAGE(ApiResultConstants.CODE.ERROR));
+                return apiResult;
+            }
+            // return apiResult;
         }
 
-
-        public async Task<ApiResult<string>> Authencate(LoginRequest request)
+        /// <summary>
+        /// LOGIN
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<ApiResult<string>> LoginAsync(LoginRequest request)
         {
             var apiResult = new ApiResult<string>("");
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null || (await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true)).Succeeded)
+            if (user == null || (await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true)).Succeeded == false)
             {
-                apiResult.SetResult(
-                    (int)ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E,
-                    false,
-                    "",
+                apiResult.SetResult((int)ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E, false, "",
                     ApiResultConstants.MESSAGE(ApiResultConstants.CODE.USERNAME_PASSWORD_EXISTS_E));
                 return apiResult;
             }
@@ -102,11 +105,30 @@ namespace vigalileo.Services.System.Users
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
 
             apiResult.SetResult(
-                (int)ApiResultConstants.CODE.SUCCESS,
-                true,
-                jwtToken,
+                (int)ApiResultConstants.CODE.SUCCESS, true, jwtToken,
                 ApiResultConstants.MESSAGE(ApiResultConstants.CODE.SUCCESS));
             return apiResult;
+        }
+
+        public async Task<ApiResult<UserDTO>> GetById(Guid userId)
+        {
+            var result = new ApiResult<UserDTO>(new UserDTO());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, null,
+                    ApiResultConstants.MESSAGE(ApiResultConstants.CODE.CLIENT_ERROR));
+                return result;
+            }
+            var userDTO = new UserDTO()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                FirstName = user.FirstName
+            };
+            result.SetResult((int)ApiResultConstants.CODE.SUCCESS, true, userDTO,
+                ApiResultConstants.MESSAGE(ApiResultConstants.CODE.SUCCESS));
+            return result;
         }
     }
 }
