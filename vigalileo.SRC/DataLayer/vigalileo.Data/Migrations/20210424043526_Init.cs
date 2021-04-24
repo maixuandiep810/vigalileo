@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace vigalileo.Data.Migrations
 {
-    public partial class FirstMigration : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -146,6 +146,7 @@ namespace vigalileo.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Brands", x => x.Id);
+                    table.UniqueConstraint("AK_Brands_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,8 +201,9 @@ namespace vigalileo.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(256)", nullable: true),
-                    Action = table.Column<string>(type: "varchar(16)", nullable: false)
+                    Name = table.Column<string>(type: "varchar(256)", nullable: false),
+                    Action = table.Column<string>(type: "varchar(16)", nullable: false),
+                    Description = table.Column<string>(type: "varchar(1024)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -214,8 +216,8 @@ namespace vigalileo.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Price = table.Column<decimal>(nullable: false),
-                    OriginalPrice = table.Column<decimal>(nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,8)", nullable: false),
+                    OriginalPrice = table.Column<decimal>(type: "decimal(10,8)", nullable: false),
                     Stock = table.Column<int>(nullable: false, defaultValue: 0),
                     ViewCount = table.Column<int>(nullable: false, defaultValue: 0),
                     CreatedAt = table.Column<DateTime>(nullable: false),
@@ -264,6 +266,7 @@ namespace vigalileo.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stores", x => x.Id);
+                    table.UniqueConstraint("AK_Stores_Name", x => x.Name);
                     table.ForeignKey(
                         name: "FK_Stores_Brands_BrandId",
                         column: x => x.BrandId,
@@ -331,6 +334,27 @@ namespace vigalileo.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EntityPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BitFields = table.Column<int>(nullable: false, defaultValue: 0),
+                    IsUserPermission = table.Column<bool>(nullable: false, defaultValue: false),
+                    PermissionId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EntityPermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EntityPermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PermissionInRoles",
                 columns: table => new
                 {
@@ -351,6 +375,26 @@ namespace vigalileo.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PermissionInRoles_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoutePermissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PathRegex = table.Column<string>(type: "varchar(1024)", nullable: true),
+                    PermissionId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoutePermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoutePermissions_Permissions_PermissionId",
                         column: x => x.PermissionId,
                         principalTable: "Permissions",
                         principalColumn: "Id",
@@ -452,7 +496,7 @@ namespace vigalileo.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<decimal>(nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(10,8)", nullable: false),
                     Status = table.Column<int>(nullable: false, defaultValue: 0),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
@@ -499,13 +543,41 @@ namespace vigalileo.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserInEntityPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserId = table.Column<Guid>(nullable: false),
+                    PermissionId = table.Column<int>(nullable: false),
+                    EntityId = table.Column<string>(type: "nvarchar(1024)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserInEntityPermissions", x => x.Id);
+                    table.UniqueConstraint("AK_UserInEntityPermissions_PermissionId_ApplicationUserId", x => new { x.PermissionId, x.ApplicationUserId });
+                    table.ForeignKey(
+                        name: "FK_UserInEntityPermissions_ApplicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "ApplicationUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserInEntityPermissions_EntityPermissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "EntityPermissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Quantity = table.Column<int>(nullable: false),
-                    Price = table.Column<decimal>(nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,8)", nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     OrderId = table.Column<int>(nullable: false),
@@ -535,8 +607,8 @@ namespace vigalileo.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<decimal>(nullable: false),
-                    Fee = table.Column<decimal>(nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(10,8)", nullable: false),
+                    Fee = table.Column<decimal>(type: "decimal(10,8)", nullable: false),
                     Status = table.Column<int>(nullable: false),
                     Provider = table.Column<string>(type: "nvarchar(1024)", nullable: true),
                     Message = table.Column<string>(type: "ntext", nullable: true),
@@ -612,6 +684,12 @@ namespace vigalileo.Data.Migrations
                 column: "LanguageId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EntityPermissions_PermissionId",
+                table: "EntityPermissions",
+                column: "PermissionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId",
                 table: "OrderDetails",
                 column: "ProductId");
@@ -635,6 +713,12 @@ namespace vigalileo.Data.Migrations
                 name: "IX_ProductTranslations_LanguageId",
                 table: "ProductTranslations",
                 column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoutePermissions_PermissionId",
+                table: "RoutePermissions",
+                column: "PermissionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_SellerDetails_StoreId",
@@ -661,6 +745,11 @@ namespace vigalileo.Data.Migrations
                 table: "Transactions",
                 column: "OrderId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserInEntityPermissions_ApplicationUserId",
+                table: "UserInEntityPermissions",
+                column: "ApplicationUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -708,16 +797,19 @@ namespace vigalileo.Data.Migrations
                 name: "ProductTranslations");
 
             migrationBuilder.DropTable(
+                name: "RoutePermissions");
+
+            migrationBuilder.DropTable(
                 name: "StoreInOrders");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "ApplicationRoles");
+                name: "UserInEntityPermissions");
 
             migrationBuilder.DropTable(
-                name: "Permissions");
+                name: "ApplicationRoles");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -735,10 +827,16 @@ namespace vigalileo.Data.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "EntityPermissions");
+
+            migrationBuilder.DropTable(
                 name: "Stores");
 
             migrationBuilder.DropTable(
                 name: "CustomerDetails");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
 
             migrationBuilder.DropTable(
                 name: "Brands");

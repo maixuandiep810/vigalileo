@@ -30,6 +30,7 @@ namespace vigalileo.Data.EF
             modelBuilder.ApplyConfiguration(new CategoryTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new ContactConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new EntityPermissionConfiguration());
 
             modelBuilder.ApplyConfiguration(new LanguageConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
@@ -40,11 +41,15 @@ namespace vigalileo.Data.EF
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
+            modelBuilder.ApplyConfiguration(new RoutePermissionConfiguration());
+
 
             modelBuilder.ApplyConfiguration(new SellerDetailConfiguration());
             modelBuilder.ApplyConfiguration(new StoreConfiguration());
             modelBuilder.ApplyConfiguration(new StoreInOrderConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new UserInEntityPermissionConfiguration());
+
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("ApplicationUserClaims");
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("ApplicationUserRoles").HasKey(x => new { x.UserId, x.RoleId });
@@ -52,6 +57,7 @@ namespace vigalileo.Data.EF
 
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("ApplicationRoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("ApplicationUserTokens").HasKey(x => x.UserId);
+
 
             //Data seeding
             // modelBuilder.Seed();
@@ -74,6 +80,8 @@ namespace vigalileo.Data.EF
         public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<CustomerDetail> CustomerDetails { get; set; }
+        public DbSet<EntityPermission> EntityPermissions { get; set; }
+
 
         public DbSet<Language> Languages { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -84,10 +92,13 @@ namespace vigalileo.Data.EF
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductInCategory> ProductInCategories { get; set; }
         public DbSet<ProductTranslation> ProductTranslations { get; set; }
+        public DbSet<RoutePermission> RoutePermissions { get; set; }
+
 
         public DbSet<SellerDetail> SellerDetails { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<StoreInOrder> StoreInOrders { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<UserInEntityPermission> UserInEntityPermissions { get; set; }
     }
 }

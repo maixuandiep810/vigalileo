@@ -8,7 +8,7 @@ namespace vigalileo.DTOs.System.Users
         public string Password { get; set; }
         public bool RememberMe { get; set; }
     }
-        public class LoginRequestValidator : AbstractValidator<LoginRequest>
+    public class LoginRequestValidator : AbstractValidator<LoginRequest>
     {
         public LoginRequestValidator()
         {

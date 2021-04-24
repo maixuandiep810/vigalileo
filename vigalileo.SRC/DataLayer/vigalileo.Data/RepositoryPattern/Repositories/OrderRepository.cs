@@ -4,7 +4,7 @@ using vigalileo.Data.EF;
 
 namespace vigalileo.Data.RepositoryPattern.Repositories
 {
-    public class OrderRepository : GenericRepository<Order, int>, IGenericRepository<Order, int>
+    public class OrderRepository : GenericRepository<Order, int>, IOrderRepository
     {
         public OrderRepository(vigalileoDbContext vigalileoDbContext) : base(vigalileoDbContext)
         {

@@ -5,9 +5,9 @@ using vigalileo.Data.EF;
 
 namespace vigalileo.Data.RepositoryPattern.Repositories
 {
-    public class ApplicationRoleRepository : GenericRepository<ApplicationRole, Guid>, IApplicationRoleRepository
+    public class ApplicationUserRepository : GenericRepository<ApplicationUser, Guid>, IApplicationUserRepository
     {
-        public ApplicationRoleRepository(vigalileoDbContext vigalileoDbContext) : base(vigalileoDbContext)
+        public ApplicationUserRepository(vigalileoDbContext vigalileoDbContext) : base(vigalileoDbContext)
         {
 
         }

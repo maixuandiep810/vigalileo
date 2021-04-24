@@ -241,6 +241,8 @@ namespace vigalileo.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name");
+
                     b.ToTable("Brands");
                 });
 
@@ -423,6 +425,34 @@ namespace vigalileo.Data.Migrations
                     b.ToTable("CustomerDetails");
                 });
 
+            modelBuilder.Entity("vigalileo.Data.Entities.EntityPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BitFields")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<bool>("IsUserPermission")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissionId")
+                        .IsUnique();
+
+                    b.ToTable("EntityPermissions");
+                });
+
             modelBuilder.Entity("vigalileo.Data.Entities.Language", b =>
                 {
                     b.Property<string>("Id")
@@ -450,7 +480,7 @@ namespace vigalileo.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,8)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -487,7 +517,7 @@ namespace vigalileo.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,8)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -518,7 +548,11 @@ namespace vigalileo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(16)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("varchar(1024)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
@@ -561,10 +595,10 @@ namespace vigalileo.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OriginalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,8)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,8)");
 
                     b.Property<int>("Stock")
                         .ValueGeneratedOnAdd()
@@ -645,6 +679,27 @@ namespace vigalileo.Data.Migrations
                     b.ToTable("ProductTranslations");
                 });
 
+            modelBuilder.Entity("vigalileo.Data.Entities.RoutePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("PathRegex")
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissionId")
+                        .IsUnique();
+
+                    b.ToTable("RoutePermissions");
+                });
+
             modelBuilder.Entity("vigalileo.Data.Entities.SellerDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -703,6 +758,8 @@ namespace vigalileo.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name");
+
                     b.HasIndex("BrandId");
 
                     b.ToTable("Stores");
@@ -751,13 +808,13 @@ namespace vigalileo.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,8)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Fee")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,8)");
 
                     b.Property<string>("Message")
                         .HasColumnType("ntext");
@@ -780,6 +837,32 @@ namespace vigalileo.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("vigalileo.Data.Entities.UserInEntityPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EntityId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("PermissionId", "ApplicationUserId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("UserInEntityPermissions");
                 });
 
             modelBuilder.Entity("vigalileo.Data.Entities.BrandInCategory", b =>
@@ -832,6 +915,15 @@ namespace vigalileo.Data.Migrations
                     b.HasOne("vigalileo.Data.Entities.ApplicationUser", "ApplicationUser")
                         .WithOne("CustomerDetail")
                         .HasForeignKey("vigalileo.Data.Entities.CustomerDetail", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("vigalileo.Data.Entities.EntityPermission", b =>
+                {
+                    b.HasOne("vigalileo.Data.Entities.Permission", "Permission")
+                        .WithOne("EntityPermission")
+                        .HasForeignKey("vigalileo.Data.Entities.EntityPermission", "PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -905,6 +997,15 @@ namespace vigalileo.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("vigalileo.Data.Entities.RoutePermission", b =>
+                {
+                    b.HasOne("vigalileo.Data.Entities.Permission", "Permission")
+                        .WithOne("RoutePermission")
+                        .HasForeignKey("vigalileo.Data.Entities.RoutePermission", "PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("vigalileo.Data.Entities.SellerDetail", b =>
                 {
                     b.HasOne("vigalileo.Data.Entities.ApplicationUser", "ApplicationUser")
@@ -954,6 +1055,21 @@ namespace vigalileo.Data.Migrations
                     b.HasOne("vigalileo.Data.Entities.Order", "Order")
                         .WithOne("Transaction")
                         .HasForeignKey("vigalileo.Data.Entities.Transaction", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("vigalileo.Data.Entities.UserInEntityPermission", b =>
+                {
+                    b.HasOne("vigalileo.Data.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("UserInEntityPermissions")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("vigalileo.Data.Entities.EntityPermission", "EntityPermission")
+                        .WithMany("UserInEntityPermissions")
+                        .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

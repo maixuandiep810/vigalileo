@@ -4,7 +4,7 @@ using vigalileo.Data.EF;
 
 namespace vigalileo.Data.RepositoryPattern.Repositories
 {
-    public class SellerDetailRepository : GenericRepository<SellerDetail, int>, IGenericRepository<SellerDetail, int>
+    public class SellerDetailRepository : GenericRepository<SellerDetail, int>, ISellerDetailRepository
     {
         public SellerDetailRepository(vigalileoDbContext vigalileoDbContext) : base(vigalileoDbContext)
         {

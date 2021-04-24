@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,5 +15,6 @@ namespace vigalileo.Data.Entities
 
         public virtual CustomerDetail CustomerDetail { get; set; }
         public virtual SellerDetail SellerDetail { get; set; }
+        public virtual List<UserInEntityPermission> UserInEntityPermissions { get; set; }
     }
 }

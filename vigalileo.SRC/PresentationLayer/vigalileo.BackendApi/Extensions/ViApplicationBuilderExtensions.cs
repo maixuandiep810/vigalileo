@@ -1,18 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using vigalileo.BackendApi.Middlewares;
-using vigalileo.BackendApi.Common.ViRouter;
 using Microsoft.AspNetCore.Http;
 
 namespace vigalileo.BackendApi.Extensions
 {
     public static class ViApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseViAuthentication(this IApplicationBuilder app)
+
+
+        public static IApplicationBuilder UseViRBAC(this IApplicationBuilder app)
         {
-            app.UseWhen(ViRouteFilter.FilterAuthenticationRoutes,
-                app => app.UseViAuthentication()
-            );  
-            return app.UseMiddleware<ViAuthenticationMiddleware>();
+            return app.UseMiddleware<ViRBACMiddleware>();
         }
 
         public static IApplicationBuilder UseViExceptionHandler(this IApplicationBuilder app)

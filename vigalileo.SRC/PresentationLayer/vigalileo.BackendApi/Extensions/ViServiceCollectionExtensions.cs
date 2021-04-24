@@ -8,6 +8,9 @@ using vigalileo.Utilities.Constants;
 using Microsoft.EntityFrameworkCore;
 using vigalileo.DTOs.System.Users;
 using FluentValidation;
+using vigalileo.Services.System.Auth;
+using vigalileo.Services.System.RolePermissions;
+using vigalileo.Data.UnitOfWorkPattern;
 
 namespace vigalileo.BackendApi.Extensions
 {
@@ -27,6 +30,9 @@ namespace vigalileo.BackendApi.Extensions
         public static IServiceCollection AddViServices(this IServiceCollection services)
         {
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IJWTService, JWTService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             return services;
         }
 

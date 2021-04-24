@@ -1,13 +1,16 @@
+using System.Linq;
 using System;
 using vigalileo.Data.RepositoryPattern.IRepositories;
 using vigalileo.Data.Entities;
 using vigalileo.Data.EF;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace vigalileo.Data.RepositoryPattern.Repositories
 {
-    public class ApplicationUserRepository : GenericRepository<ApplicationUser, Guid>, IApplicationUserRepository
+    public class ApplicationRoleRepository : GenericRepository<ApplicationRole, Guid>, IApplicationRoleRepository
     {
-        public ApplicationUserRepository(vigalileoDbContext vigalileoDbContext) : base(vigalileoDbContext)
+        public ApplicationRoleRepository(vigalileoDbContext vigalileoDbContext) : base(vigalileoDbContext)
         {
 
         }

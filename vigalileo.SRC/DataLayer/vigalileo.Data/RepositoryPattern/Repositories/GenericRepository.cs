@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using vigalileo.Data.RepositoryPattern.IRepositories;
 using vigalileo.Data.EF;
 using vigalileo.Data.Entities;
+using System.Linq.Expressions;
+using System.Linq;
 
 namespace vigalileo.Data.RepositoryPattern.Repositories
 {
@@ -18,7 +21,7 @@ namespace vigalileo.Data.RepositoryPattern.Repositories
             entities = _context.Set<TEntity>();
         }
 
-        public async Task<TEntity> GetAsync(TPKey id)
+        public async Task<TEntity> GetByIdAsync(TPKey id)
         {
             try
             {
@@ -74,6 +77,19 @@ namespace vigalileo.Data.RepositoryPattern.Repositories
             try
             {
                 entities.Remove(entity);
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            try
+            {
+                var result = await entities.Where(predicate).ToListAsync();
+                return result;
             }
             catch (System.Exception ex)
             {

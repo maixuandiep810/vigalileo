@@ -12,8 +12,11 @@ namespace vigalileo.Data.Configurations
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Name).HasColumnType("varchar(256)");
-            builder.Property(x => x.Action).HasColumnType("varchar(16)").IsRequired(true);
+            builder.Property(x => x.Name).HasColumnType("varchar(256)").IsRequired();
+            builder.Property(x => x.Description).HasColumnType("varchar(1024)");
+
+            builder.HasOne<EntityPermission>(x => x.EntityPermission).WithOne(x => x.Permission).HasForeignKey<EntityPermission>(x => x.PermissionId);
+            builder.HasOne<RoutePermission>(x => x.RoutePermission).WithOne(x => x.Permission).HasForeignKey<RoutePermission>(x => x.PermissionId);
         }
     }
 }

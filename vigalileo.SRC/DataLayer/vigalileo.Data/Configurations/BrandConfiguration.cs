@@ -12,6 +12,7 @@ namespace vigalileo.Data.Configurations
             builder.ToTable("Brands");
 
             builder.HasKey(x => x.Id);
+            builder.HasAlternateKey(x => x.Name);
 
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Name).HasColumnType("nvarchar(1024)").IsRequired();

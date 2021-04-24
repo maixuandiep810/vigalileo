@@ -5,7 +5,6 @@ using vigalileo.DTOs.System.Users;
 using System.Threading.Tasks;
 using vigalileo.DTOs.Common;
 using vigalileo.Utilities.Constants;
-using vigalileo.Utilities.UriUtils;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using vigalileo.BackendApi.Extensions;
@@ -20,22 +19,21 @@ namespace vigalileo.BackendApi.Controllers
             _userService = userService;
         }
 
-        [HttpGet(UriConstants.API_USERS_ID_GET_PATH)]
-        public async Task<IActionResult> Read(Guid userId)
-        {
-            var result = new ApiResult<UserDTO>(new UserDTO());
 
-            if (!ModelState.IsValid)
-            {
-                var validatorResult = new ApiResult<Guid>(new Guid());
-                validatorResult.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, userId, ModelState.GetMessages());
-                return Ok(validatorResult);
-            }
 
-            result = await _userService.GetById(userId);
-            return Ok(result);
-        }
+        ///
+        ///     USER 
+        /// 
 
+        /// <summary>
+        /// 
+        /// C
+        /// 
+        /// REGISTER a user account
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        /// 
         [HttpPost(UriConstants.API_USERS_REGISTER_POST_PATH)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
         {
@@ -48,15 +46,23 @@ namespace vigalileo.BackendApi.Controllers
 
             if (!ModelState.IsValid)
             {
-                var validatorResult = new ApiResult<RegisterRequest>(new RegisterRequest());
-                validatorResult.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, req, ModelState.GetMessages());
-                return Ok(validatorResult);
+                result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, false, ModelState.GetMessages());
+                return Ok(result);
             }
 
             result = await _userService.RegisterAsync(req);
             return Ok(result);
         }
 
+        /// <summary>
+        /// 
+        /// R
+        /// 
+        /// LOGIN 
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        /// 
         [HttpPost(UriConstants.API_USERS_LOGIN_POST_PATH)]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
@@ -76,13 +82,77 @@ namespace vigalileo.BackendApi.Controllers
 
             if (!ModelState.IsValid)
             {
-                var validatorResult = new ApiResult<LoginRequest>(new LoginRequest());
-                validatorResult.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, req, ModelState.GetMessages());
-                return Ok(validatorResult);
+                result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, "", ModelState.GetMessages());
+                return Ok(result);
             }
 
             result = await _userService.LoginAsync(req);
             return Ok(result);
         }
+
+
+        /// <summary>
+        /// 
+        /// R
+        /// 
+        /// READ user by Id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        /// 
+        [HttpGet(UriConstants.API_USERS_NAME_GET_PATH)]
+        public async Task<IActionResult> Read(string username)
+        {
+            var result = new ApiResult<UserDTO>(new UserDTO());
+            if (!ModelState.IsValid)
+            {
+                result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, null, ModelState.GetMessages());
+                return Ok(result);
+            }
+
+            var clientId = HttpContext.Items["ClientId"].ToString();
+            result = await _userService.GetByNameAsync(username, clientId);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 
+        /// U
+        /// 
+        /// Update User Info
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        ///
+        [HttpPost(UriConstants.API_USERS_UPDATE_PUTCH_PATH)]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserRequest req, string userId)
+        {
+            var result = new ApiResult<bool>(false);
+            if (!ModelState.IsValid)
+            {
+                result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, false, ModelState.GetMessages());
+                return Ok(result);
+            }
+            result = await _userService.UpdateAsync(req, userId);
+            return Ok(result);
+        }
+
+        ///
+        ///     USER - ROLE
+        ///
+
+        // [HttpPost(zvxccgauiufucgavgtrhgn)]
+        // public async Task<IActionResult> AddUserToRole([FromBody] UpdateUserRequest req, string userId)
+        // {
+        //     var result = new ApiResult<bool>(false);
+        //     if (!ModelState.IsValid)
+        //     {
+        //         result.SetResult((int)ApiResultConstants.CODE.CLIENT_ERROR, false, false, ModelState.GetMessages());
+        //         return Ok(result);
+        //     }
+        //     result = await _userService.UpdateAsync(req, userId);
+        //     return Ok(result);
+        // }
     }
 }

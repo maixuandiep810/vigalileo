@@ -16,6 +16,8 @@ namespace vigalileo.Data.Configurations
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).UseIdentityColumn();
+            builder.Property(x => x.Amount).HasColumnType("decimal(10,8)").IsRequired();
+            builder.Property(x => x.Fee).HasColumnType("decimal(10,8)").IsRequired();
             builder.Property(x => x.Message).HasColumnType("ntext");
             builder.Property(x => x.Provider).HasColumnType("nvarchar(1024)");
         }

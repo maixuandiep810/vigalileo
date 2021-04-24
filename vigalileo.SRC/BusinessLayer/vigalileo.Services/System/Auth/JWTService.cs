@@ -9,7 +9,7 @@ using System;
 
 namespace vigalileo.Services.System.Auth
 {
-    public class JWTService
+    public class JWTService : IJWTService
     {
         private readonly IConfiguration _configuration;
 

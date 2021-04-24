@@ -1,37 +1,42 @@
 using System;
 using System.Threading.Tasks;
-using vigalileo.Data.Core;
 using vigalileo.Data.RepositoryPattern.IRepositories;
 using vigalileo.Data.EF;
 using vigalileo.Data.RepositoryPattern.Repositories;
 
-namespace vigalileo.Data.Persistence
+namespace vigalileo.Data.UnitOfWorkPattern
+
 {
     public class UnitOfWork : IUnitOfWork
     {
         private bool _disposed = false;
         private readonly vigalileoDbContext _context;
 
-        public IAppConfigRepository AppConfigRepository { get; set; }
-        public IApplicationRoleRepository ApplicationRoleRepository { get; set; }
-        public IApplicationUserRepository ApplicationUserRepository { get; set; }
-        public IBrandRepository BrandRepository { get; set; }
-        public IBrandInCategoryRepository BrandInCategoryRepository { get; set; }
-        public ICartRepository CartRepository { get; set; }
-        public ICategoryRepository CategoryRepository { get; set; }
-        public ICategoryTranslationRepository categoryTranslationRepository { get; set; }
-        public IContactRepository ContactRepository { get; set; }
-        public ICustomerDetailRepository CustomerDetailRepository { get; set; }
-        public ILanguageRepository LanguageRepository { get; set; }
-        public IOrderRepository OrderRepository { get; set; }
-        public IOrderDetailRepository OrderDetailRepository { get; set; }
-        public IProductRepository ProductRepository { get; set; }
-        public IProductInCategoryRepository productInCategoryRepository { get; set; }
-        public IProductTranslationRepository ProductTranslationRepository { get; set; }
-        public ISellerDetailRepository SellerDetailRepository { get; set; }
-        public IStoreRepository StoreRepository { get; set; }
-        public IStoreInOrderRepository storeInOrderRepository { get; set; }
-        public ITransactionRepository TransactionRepository { get; set; }
+        public IAppConfigRepository AppConfigRepository { get; }
+        public IApplicationRoleRepository ApplicationRoleRepository { get; }
+        public IApplicationUserRepository ApplicationUserRepository { get; }
+        public IBrandRepository BrandRepository { get; }
+        public IBrandInCategoryRepository BrandInCategoryRepository { get; }
+        public ICartRepository CartRepository { get; }
+        public ICategoryRepository CategoryRepository { get; }
+        public ICategoryTranslationRepository categoryTranslationRepository { get; }
+        public IContactRepository ContactRepository { get; }
+        public ICustomerDetailRepository CustomerDetailRepository { get; }
+        public IEntityPermissionRepository EntityPermissionRepository { get; }
+        public ILanguageRepository LanguageRepository { get; }
+        public IOrderRepository OrderRepository { get; }
+        public IOrderDetailRepository OrderDetailRepository { get; }
+        public IPermissionRepository PermissionRepository { get; }
+        public IPermissionInRoleRepository PermissionInRoleRepository { get; }
+        public IProductRepository ProductRepository { get; }
+        public IProductInCategoryRepository ProductInCategoryRepository { get; }
+        public IProductTranslationRepository ProductTranslationRepository { get; }
+        public IRoutePermissionRepository RoutePermissionRepository { get; }
+        public ISellerDetailRepository SellerDetailRepository { get; }
+        public IStoreRepository StoreRepository { get; }
+        public IStoreInOrderRepository storeInOrderRepository { get; }
+        public ITransactionRepository TransactionRepository { get; }
+        public IUserInEntityPermissionRepository UserInEntityPermissionRepository { get; }
 
         public UnitOfWork(vigalileoDbContext context)
         {
@@ -42,6 +47,10 @@ namespace vigalileo.Data.Persistence
             BrandInCategoryRepository = new BrandInCategoryRepository(_context);
             BrandRepository = new BrandRepository(_context);
             CartRepository = new CartRepository(_context);
+            EntityPermissionRepository = new EntityPermissionRepository(_context);
+            PermissionInRoleRepository = new PermissionInRoleRepository(_context);
+            RoutePermissionRepository = new RoutePermissionRepository(_context);
+            UserInEntityPermissionRepository = new UserInEntityPermissionRepository(_context);
         }
 
         public void Dispose()

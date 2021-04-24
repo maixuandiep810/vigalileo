@@ -15,6 +15,7 @@ namespace vigalileo.Data.Configurations
             
             builder.HasKey(x => x.Id);
             builder.HasAlternateKey(x => new { x.OrderId, x.ProductId });
+            builder.Property(x => x.Price).HasColumnType("decimal(10,8)");
 
             builder.HasOne<Order>(x => x.Order).WithMany(x => x.OrderDetails).HasForeignKey(x => x.OrderId);
             builder.HasOne<Product>(x => x.Product).WithMany(x => x.OrderDetails).HasForeignKey(x => x.ProductId);
